@@ -12,7 +12,8 @@
     "start": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
-    "clean": "gatsby clean"
+    "clean": "gatsby clean",
+    "format": "prettier --write '**/*.js'"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.4.1",
@@ -21,16 +22,22 @@
     "dotenv": "^10.0.0",
     "gatsby": "^4.0.0",
     "gatsby-plugin-image": "^2.0.0",
+    "gatsby-plugin-manifest": "^4.6.0",
+    "gatsby-plugin-offline": "^5.6.0",
     "gatsby-plugin-postcss": "^5.0.0",
     "gatsby-plugin-react-helmet": "^5.0.0",
+    "gatsby-plugin-sass": "^5.6.0",
     "gatsby-plugin-sharp": "^4.0.0",
     "gatsby-source-datocms": "^3.0.10",
     "gatsby-transformer-sharp": "^4.0.0",
+    "node-sass": "^6.0.0",
     "postcss": "^8.3.6",
+    "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-datocms": "^1.6.3",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
+    "sass-loader": "^12.4.0",
     "tailwindcss": "^2.0.3"
   },
   "resolutions": {

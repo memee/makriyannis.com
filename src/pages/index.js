@@ -1,68 +1,117 @@
-import React from "react";
-import Container from "../components/container";
-import HeroPost from "../components/hero-post";
-import Intro from "../components/intro";
-import MoreStories from "../components/more-stories";
-import { HelmetDatoCms } from "gatsby-source-datocms";
+import React from 'react'
 import { graphql } from "gatsby";
 
-export default function Index({ data: { allPosts, site, blog } }) {
-  const heroPost = allPosts.nodes[0];
-  const morePosts = allPosts.nodes.slice(1);
+import Layout from '../components/layout'
+import Header from '../components/Header'
+import Main from '../components/Main'
+import Footer from '../components/Footer'
 
-  return (
-    <Container>
-      <HelmetDatoCms seo={blog.seo} favicon={site.favicon} />
-      <Intro />
-      {heroPost && (
-        <HeroPost
-          title={heroPost.title}
-          coverImage={heroPost.coverImage}
-          date={heroPost.date}
-          author={heroPost.author}
-          slug={heroPost.slug}
-          excerpt={heroPost.excerpt}
-        />
-      )}
-      {morePosts.length > 0 && <MoreStories posts={morePosts} />}
-    </Container>
-  );
-}
+class IndexPage extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isArticleVisible: false,
+      timeout: false,
+      articleTimeout: false,
+      article: '',
+      loading: 'is-loading'
+    }
+    this.handleOpenArticle = this.handleOpenArticle.bind(this)
+    this.handleCloseArticle = this.handleCloseArticle.bind(this)
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+  }
 
-export const query = graphql`
-  {
-    site: datoCmsSite {
-      favicon: faviconMetaTags {
-        ...GatsbyDatoCmsFaviconMetaTags
-      }
+  componentDidMount () {
+    this.timeoutId = setTimeout(() => {
+      this.setState({loading: ''});
+    }, 100);
+    document.addEventListener('mousedown', this.handleClickOutside);
+  }
+
+  componentWillUnmount () {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
     }
-    blog: datoCmsBlog {
-      seo: seoMetaTags {
-        ...GatsbyDatoCmsSeoMetaTags
-      }
-    }
-    allPosts: allDatoCmsPost(sort: { fields: date, order: DESC }, limit: 20) {
-      nodes {
-        title
-        slug
-        excerpt
-        date
-        coverImage {
-          large: gatsbyImageData(width: 1500)
-          small: gatsbyImageData(width: 760)
-        }
-        author {
-          name
-          picture {
-            gatsbyImageData(
-              layout: FIXED
-              width: 48
-              height: 48
-              imgixParams: { sat: -100 }
-            )
-          }
-        }
+    document.removeEventListener('mousedown', this.handleClickOutside);
+  }
+
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleOpenArticle(article) {
+
+    this.setState({
+      isArticleVisible: !this.state.isArticleVisible,
+      article
+    })
+
+    setTimeout(() => {
+      this.setState({
+        timeout: !this.state.timeout
+      })
+    }, 325)
+
+    setTimeout(() => {
+      this.setState({
+        articleTimeout: !this.state.articleTimeout
+      })
+    }, 350)
+
+  }
+
+  handleCloseArticle() {
+
+    this.setState({
+      articleTimeout: !this.state.articleTimeout
+    })
+
+    setTimeout(() => {
+      this.setState({
+        timeout: !this.state.timeout
+      })
+    }, 325)
+
+    setTimeout(() => {
+      this.setState({
+        isArticleVisible: !this.state.isArticleVisible,
+        article: ''
+      })
+    }, 350)
+
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      if (this.state.isArticleVisible) {
+        this.handleCloseArticle();
       }
     }
   }
-`;
+
+  render() {
+    return (
+      <Layout location={this.props.location} data={this.props.data}>
+        <div className={`body ${this.state.loading} ${this.state.isArticleVisible ? 'is-article-visible' : ''}`}>
+          <div id="wrapper">
+            <Header onOpenArticle={this.handleOpenArticle} timeout={this.state.timeout} />
+            <Main
+              isArticleVisible={this.state.isArticleVisible}
+              timeout={this.state.timeout}
+              articleTimeout={this.state.articleTimeout}
+              article={this.state.article}
+              onCloseArticle={this.handleCloseArticle}
+              setWrapperRef={this.setWrapperRef}
+            />
+            <Footer timeout={this.state.timeout} />
+          </div>
+          <div id="bg"></div>
+        </div>
+      </Layout>
+    )
+  }
+}
+
+export default IndexPage
+
