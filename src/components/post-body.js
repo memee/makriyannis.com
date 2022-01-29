@@ -9,6 +9,7 @@ export default function PostBody({ content, title, date }) {
   return (
     <>
       <h3>{title}</h3>
+      <p>{date}</p>
       <StructuredText
         data={content}
         renderBlock={({ record }) => {
