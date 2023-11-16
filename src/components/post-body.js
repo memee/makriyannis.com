@@ -3,7 +3,7 @@ import { GatsbyImage } from "gatsby-plugin-image";
 import { StructuredText } from "react-datocms";
 
 const ytRegex =
-  /https:\/\/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi;
+  /https:\/\/(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/gi;
 
 export default function PostBody({ content, title, date }) {
   return (
